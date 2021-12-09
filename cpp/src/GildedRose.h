@@ -38,6 +38,8 @@ private:
     {
         return name == "Backstage passes to a TAFKAL80ETC concert";
     }
+    void setBounds(Item& item);
     
 };
 
+void setBounds(Item& item);

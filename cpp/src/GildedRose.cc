@@ -10,20 +10,21 @@ void GildedRose::updateQuality()
 {
     for (Item &item : items)
     {
-        if (isSulfurasFn(item.name) || isAgedBrieFn(item.name) || isBackStageFn(item.name))
+        if (isBackStageFn(item.name))
         {
                 item.quality++;
-                if (isSulfurasFn(item.name) || isAgedBrieFn(item.name))
-                {
-                    if (item.sellIn < 6)
-                    {
-                        item.quality+=2;
-                    }
-                    if (item.sellIn < 11)
-                    {
-                        item.quality += 1;
-                    }
-                }
+                
+        }
+        if (isSulfurasFn(item.name) || isAgedBrieFn(item.name))
+        {
+            if (item.sellIn < 6)
+            {
+                item.quality += 3;
+            }
+            if (item.sellIn < 11)
+            {
+                item.quality += 2;
+            }
         }
         else 
         {
@@ -34,8 +35,13 @@ void GildedRose::updateQuality()
             item.sellIn--;
         }
         handleExpired(item);
-        item.quality = max(MIN_QUALITY, min(item.quality, MAX_QUALITY));
+        setBounds(item);
     }
+}
+
+void GildedRose::setBounds(Item& item)
+{
+    item.quality = max(MIN_QUALITY, min(item.quality, MAX_QUALITY));
 }
 
 void GildedRose::handleExpired(Item& item)
@@ -44,11 +50,11 @@ void GildedRose::handleExpired(Item& item)
         return;
     if (isAgedBrieFn(item.name) || isBackStageFn(item.name))
     {
-        item.quality = min(item.quality++, 50);
+        item.quality++;
     }
     else if(isSulfurasFn(item.name))
     {
-        item.quality = 0;
+        item.quality = MIN_QUALITY;
     }
     else
     {
