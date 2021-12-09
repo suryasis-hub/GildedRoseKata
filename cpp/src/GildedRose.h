@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <set>
 
 using namespace std;
 
@@ -15,10 +16,13 @@ public:
 
 class GildedRose
 {
+private:
+    bool isItemNameNotInSet(set<string> nameSet, const Item& item);
 public:
     vector<Item> & items;
     GildedRose(vector<Item> & items);
     
     void updateQuality();
+    
 };
 
