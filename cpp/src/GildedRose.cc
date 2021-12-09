@@ -12,19 +12,11 @@ void GildedRose::updateQuality()
     {
         if (isBackStageFn(item.name))
         {
-                item.quality++;
-                
+                item.quality++; 
         }
         if (isSulfurasFn(item.name) || isAgedBrieFn(item.name))
         {
-            if (item.sellIn < 6)
-            {
-                item.quality += 3;
-            }
-            if (item.sellIn < 11)
-            {
-                item.quality += 2;
-            }
+            updatingQuality(item);
         }
         else 
         {
