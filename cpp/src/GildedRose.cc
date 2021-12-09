@@ -4,61 +4,58 @@ GildedRose::GildedRose(vector<Item> & items) : items(items)
 {}
 
 
-    
+
+
 void GildedRose::updateQuality() 
 {
     for (Item &item : items)
     {
-        
-        if (isItemNameNotInSet({ "Aged Brie","Backstage passes to a TAFKAL80ETC concert","Sulfuras, Hand of Ragnaros" }
-            , item) && item.quality > 0)
+        if (isSulfurasFn(item.name) || isAgedBrieFn(item.name) || isBackStageFn(item.name))
+        {
+                item.quality++;
+                if (isSulfurasFn(item.name) || isAgedBrieFn(item.name))
+                {
+                    if (item.sellIn < 6)
+                    {
+                        item.quality+=2;
+                    }
+                    if (item.sellIn < 11)
+                    {
+                        item.quality += 1;
+                    }
+                }
+        }
+        else 
         {
             item.quality--;
         }
-        else
-        {
-            if (item.quality < 50)
-            {
-                item.quality++;
-                if (isItemNameNotInSet({ "Backstage passes to a TAFKAL80ETC concert"}
-                    , item) &&
-                    item.sellIn < 11 && item.quality < 50)
-                {
-                    item.quality++;
-                    if (item.sellIn < 6 && item.quality < 50)
-                    {
-                        item.quality++;   
-                    }
-                }
-            }
-        }
-        if (isItemNameNotInSet({ "Sulfuras, Hand of Ragnaros" }, item))
+        if (!isSulfurasFn(item.name))
         {
             item.sellIn--;
         }
-        if (item.sellIn < 0)
-        {
-            if (item.name != "Aged Brie" && item.name != "Backstage passes to a TAFKAL80ETC concert" )
-            {
-                if (item.name != "Backstage passes to a TAFKAL80ETC concert" && item.name != "Sulfuras, Hand of Ragnaros" && item.quality > 0)
-                {
-                    item.quality--;
-                }
-                else
-                {
-                    item.quality = 0;
-                }
-            }
-            else if (item.quality < 50)
-            {                
-                item.quality = item.quality++;   
-            }
-        }
+        handleExpired(item);
+        item.quality = max(MIN_QUALITY, min(item.quality, MAX_QUALITY));
     }
 }
 
-bool GildedRose::isItemNameNotInSet(set<string> nameSet, const Item& item)
+void GildedRose::handleExpired(Item& item)
 {
-    return (nameSet.find(item.name) == nameSet.end());
+    if (item.sellIn >= 0)
+        return;
+    if (isAgedBrieFn(item.name) || isBackStageFn(item.name))
+    {
+        item.quality = min(item.quality++, 50);
+    }
+    else if(isSulfurasFn(item.name))
+    {
+        item.quality = 0;
+    }
+    else
+    {
+        item.quality--;
+    }
+
 }
+
+
 
